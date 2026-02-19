@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3202/3202926.png">
+
+    <title>{% block title %}ZeksCarros{% endblock %}</title>
+
+    <script>
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
+    <style>
+        :root {
+            --cor-principal: #ff6a00;
+            --bg-light: #f8f9fa;
+            --bg-dark: #121212;
+            --text-light: #333;
+            --text-dark: #f0f0f0;
+            --nav-bg-light: #ffffff;
+            --nav-bg-dark: #1e1e1e;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: background 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dark-mode body {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--nav-bg-light);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            gap: 20px;
+        }
+
+        .dark-mode .navbar {
+            background: var(--nav-bg-dark);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--cor-principal);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        /* BARRA DE PESQUISA */
+        .search-form {
+            flex: 1;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .search-form input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 50px;
+            border: 1px solid #ddd;
+            background: #f1f3f5;
+            outline: none;
+            transition: 0.3s;
+        }
+        
+        .dark-mode .search-form input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: white;
+        }
+
+        .search-form input:focus {
+            background: white;
+            border-color: var(--cor-principal);
+            box-shadow: 0 0 0 3px rgba(255,106,0,0.1);
+        }
+        .dark-mode .search-form input:focus { background: #333; }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        /* LINKS E BOTÕES */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover { color: var(--cor-principal); }
+        .dark-mode .nav-item { color: #ccc; }
+        .dark-mode .nav-item:hover { color: var(--cor-principal); }
+
+        /* Botão de Destaque (Vender ou Cadastrar) */
+        .btn-cta {
+            background: var(--cor-principal);
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+        .btn-cta:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,106,0,0.3); }
+
+        /* Botão Dark Mode */
+        .dark-toggle {
+            background: transparent;
+            border: 1px solid #ddd;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .dark-mode .dark-toggle { border-color: #444; color: #fff; }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Conteúdo e Footer */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        footer {
+            background: #111;
+            color: #888;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: auto;
+            border-top: 1px solid #222;
+        }
+
+        /* Responsividade Mobile */
+        @media (max-width: 900px) {
+            .navbar { flex-direction: column; gap: 15px; padding: 15px; }
+            .search-form { order: 2; width: 100%; max-width: 100%; }
+            .nav-links { order: 3; flex-wrap: wrap; justify-content: center; }
+            .brand { order: 1; }
+            .user-menu { position: absolute; right: 20px; top: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'cars_list' %}" class="brand">
+            <i class="fa-solid fa-car-burst"></i> ZeksCarros
+        </a>
+
+        <form action="{% url 'cars_list' %}" method="GET" class="search-form">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="search" placeholder="Buscar marca ou modelo..." value="{{ request.GET.search }}">
+        </form>
+
+        <div class="user-menu">
+            <button class="dark-toggle" onclick="toggleDark()" title="Alternar Tema">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'cars_list' %}" class="nav-item"><i class="fa-solid fa-car"></i> Estoque</a>
+                    
+                    <a href="{% url 'new_car' %}" class="nav-item btn-cta">
+                        <i class="fa-solid fa-plus"></i> Vender
+                    </a>
+
+                    {% if user.seller %}
+                        <a href="{% url 'seller_detail' user.seller.id %}" class="nav-item" title="Meu Perfil">
+                            <i class="fa-solid fa-user-circle" style="font-size: 22px;"></i>
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'logout' %}" class="nav-item" style="color: #dc3545;" title="Sair">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-item">Entrar</a>
+                    <a href="{% url 'register' %}" class="nav-item btn-cta">Cadastrar</a> {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ZeksCarros - Todos os direitos reservados.</p>
+        <div style="margin-top: 10px; font-size: 12px;">
+            <a href="{% url 'termos' %}" style="color: #666; text-decoration: none; margin: 0 10px;">Termos de Uso</a>
+            <a href="{% url 'privacidade' %}" style="color: #666; text-decoration: none; margin: 0 10px;">Privacidade</a>
+        </div>
+    </footer>
+
+    <script>
+        const toggleBtn = document.querySelector('.dark-toggle');
+        const icon = toggleBtn.querySelector('i');
+
+        function updateIcon() {
+            if (document.documentElement.classList.contains("dark-mode")) {
+                icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
+            }
+        }
+
+        function toggleDark() {
+            document.documentElement.classList.toggle("dark-mode");
+            localStorage.setItem("theme", document.documentElement.classList.contains("dark-mode") ? "dark" : "light");
+            updateIcon();
+        }
+        updateIcon();
+    </script>
+</body>
+</html>

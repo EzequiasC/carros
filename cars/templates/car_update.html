@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.card {
+    max-width: 850px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.dark-mode .card {
+    background: #1e1e1e;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px);}
+    to { opacity:1; transform:translateY(0);}
+}
+
+.section-title {
+    margin: 30px 0 15px;
+    color: var(--cor-principal);
+    border-bottom: 2px solid var(--cor-principal);
+    padding-bottom: 5px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+}
+
+.dark-mode .form-group input,
+.dark-mode .form-group select,
+.dark-mode .form-group textarea {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 2px rgba(255,106,0,0.2);
+    outline: none;
+}
+
+.preview-img {
+    max-width: 200px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    padding: 12px 25px;
+    border: 2px solid var(--cor-principal);
+    background: transparent;
+    color: var(--cor-principal);
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: var(--cor-principal);
+    color: white;
+}
+
+.btn-danger {
+    padding: 12px 25px;
+    border: 2px solid #ff4d4d;
+    background: transparent;
+    color: #ff4d4d;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #ff4d4d;
+    color: white;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.modal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-box {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+}
+
+.dark-mode .modal-box {
+    background: #1e1e1e;
+    color: white;
+}
+</style>
+
+<div class="card">
+
+<h2 style="text-align:center;color:var(--cor-principal);">
+Editar Carro
+</h2>
+
+<form method="post" enctype="multipart/form-data" id="updateForm">
+{% csrf_token %}
+
+<div class="section-title">Informações</div>
+
+{% for field in form %}
+    {% if field.name != "price" and field.name != "image" %}
+        <div class="form-group">
+            <label>{{ field.label }}</label>
+            {{ field }}
+        </div>
+    {% endif %}
+{% endfor %}
+
+<div class="section-title">Preço</div>
+<div class="form-group">
+    {{ form.price.label_tag }}
+    {{ form.price }}
+</div>
+
+<div class="section-title">Imagem</div>
+<div class="form-group">
+    {{ form.image.label_tag }}
+    {{ form.image }}
+    <img id="preview" class="preview-img"
+        src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}">
+</div>
+
+<div class="buttons">
+    <button type="submit" class="btn-primary">
+        Salvar Alterações
+    </button>
+
+    <button type="button" class="btn-danger" onclick="openModal()">
+        Excluir
+    </button>
+</div>
+
+</form>
+</div>
+
+<!-- Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-box">
+        <h3>Confirmar exclusão</h3>
+        <p>Deseja realmente excluir este carro?</p>
+        <br>
+        <a href="{% url 'car_delete' form.instance.pk %}" class="btn-danger">
+            Sim, excluir
+        </a>
+        <br><br>
+        <button onclick="closeModal()" class="btn-primary">
+            Cancelar
+        </button>
+    </div>
+</div>
+
+<script>
+// Preview imagem
+const imgInput = document.querySelector('input[type="file"]');
+const preview = document.getElementById("preview");
+
+if (imgInput) {
+    imgInput.addEventListener("change", function(){
+        preview.src = URL.createObjectURL(this.files[0]);
+    });
+}
+
+// Modal
+function openModal(){
+    document.getElementById("deleteModal").classList.add("show");
+}
+
+function closeModal(){
+    document.getElementById("deleteModal").classList.remove("show");
+}
+
+// Máscara moeda BR
+const priceInput = document.querySelector('input[name="price"]');
+
+if(priceInput){
+priceInput.addEventListener("input", function(e){
+    let value = e.target.value.replace(/\D/g, "");
+    value = (value/100).toFixed(2) + "";
+    value = value.replace(".", ",");
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    e.target.value = "R$ " + value;
+});
+
+document.getElementById("updateForm")
+.addEventListener("submit", function(){
+    priceInput.value = priceInput.value
+        .replace("R$ ","")
+        .replace(/\./g,"")
+        .replace(",",".");
+});
+}
+</script>
+
+{% endblock %}

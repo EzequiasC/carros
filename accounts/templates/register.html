@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .register-wrapper {
+        min-height: 85vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+    }
+
+    /* Container Principal Dividido */
+    .split-container {
+        display: flex;
+        width: 100%;
+        max-width: 1000px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden; 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+
+    .dark-mode .split-container {
+        background: #1e1e1e;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    /* --- LADO ESQUERDO (IMAGEM) --- */
+    .image-side {
+        flex: 1.2;
+        background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 40px;
+        color: white;
+    }
+
+    .image-side::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
+    }
+
+    .image-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .image-content h2 {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .image-content p {
+        font-size: 16px;
+        opacity: 0.9;
+        line-height: 1.5;
+    }
+
+    /* --- LADO DIREITO (FORMULÁRIO) --- */
+    .form-side {
+        flex: 1; 
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-header h2 {
+        color: var(--cor-principal);
+        font-weight: 800;
+        font-size: 26px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #555;
+    }
+    .dark-mode .form-group label { color: #ccc; }
+
+    /* Inputs estilizados */
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        background: #f9f9f9;
+        font-size: 14px;
+        transition: 0.3s;
+        box-sizing: border-box; 
+        font-family: inherit; /* Garante a mesma fonte nos textareas */
+    }
+
+    /* --- CORREÇÃO AQUI: Fundo transparente para o Textarea --- */
+    .form-group textarea {
+        background-color: transparent !important;
+    }
+
+    /* Modo Escuro para Inputs */
+    .dark-mode .form-group input, 
+    .dark-mode .form-group select,
+    .dark-mode .form-group textarea { /* Adicionei textarea aqui também */
+        background: #2a2a2a;
+        border-color: #444;
+        color: white;
+    }
+    
+    /* Correção específica para Textarea no Dark Mode (Transparente) */
+    .dark-mode .form-group textarea {
+        background-color: transparent !important;
+        border-color: #444;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: var(--cor-principal);
+        background: white; /* Input focado fica branco */
+        outline: none;
+    }
+    
+    /* Textarea focado mantém transparente ou levemente destacado */
+    .form-group textarea:focus {
+        background-color: rgba(0,0,0,0.02) !important;
+    }
+
+    .dark-mode .form-group input:focus,
+    .dark-mode .form-group select:focus { 
+        background: #333; 
+    }
+    
+    .dark-mode .form-group textarea:focus {
+        background: transparent !important;
+        border-color: var(--cor-principal);
+    }
+
+    /* Botão */
+    .btn-register {
+        width: 100%;
+        padding: 14px;
+        background: var(--cor-principal);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+    .btn-register:hover {
+        filter: brightness(0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255,106,0,0.3);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #777;
+    }
+    .login-link a { color: var(--cor-principal); text-decoration: none; font-weight: bold; }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 768px) {
+        .split-container {
+            flex-direction: column; 
+        }
+        .image-side {
+            display: none;
+        }
+        .form-side {
+            padding: 30px;
+        }
+    }
+</style>
+
+<div class="register-wrapper">
+    <div class="split-container">
+        
+        <div class="image-side">
+            <div class="image-content">
+                <h2>Junte-se ao ZeksCarros</h2>
+                <p>A melhor plataforma para comprar e vender veículos da região. Cadastre-se e comece a negociar hoje mesmo.</p>
+            </div>
+        </div>
+
+        <div class="form-side">
+            <div class="form-header">
+                <h2>Criar Conta</h2>
+                <p style="font-size:14px; color:#888;">Preencha seus dados abaixo</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        
+                        {% if field.errors %}
+                            <div style="color:red; font-size:12px; margin-top:5px;">
+                                {{ field.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-register">
+                    Cadastrar
+                </button>
+            </form>
+
+            <div class="login-link">
+                Já tem uma conta? <a href="{% url 'login' %}">Fazer Login</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

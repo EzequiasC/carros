@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load l10n %}
+
+{% block content %}
+
+<style>
+    /* Estilos originais mantidos */
+    .seller-header {
+        background: var(--card-bg, #fff); /* Fallback para white se var não existir */
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 30px; 
+        position: relative; /* Para posicionar o botão de editar */
+    }
+
+    .dark-mode .seller-header {
+        background: #1e1e1e;
+        color: #fff;
+    }
+
+    .seller-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+    }
+
+    .seller-info-container {
+        flex-grow: 1;
+    }
+
+    .seller-name {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 10px;
+        line-height: 1.2;
+        color: #333;
+    }
+    .dark-mode .seller-name { color: #fff; }
+
+    .seller-info {
+        color: #666;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+    .dark-mode .seller-info { color: #ccc; }
+
+    /* --- BOTÃO DE EDITAR (NOVO) --- */
+    .btn-edit-profile {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        background: #f0f0f0;
+        color: #333;
+        padding: 8px 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .btn-edit-profile:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+    }
+
+    .dark-mode .btn-edit-profile {
+        background: #333;
+        color: #fff;
+        border-color: #555;
+    }
+    .dark-mode .btn-edit-profile:hover { background: #444; }
+
+    /* Grid de Carros (Mantido) */
+    .car-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .car-card {
+        background: var(--card-bg, #fff);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        transition: 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    .dark-mode .car-card { background: #1e1e1e; border: 1px solid #333; }
+
+    .car-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+    .car-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .car-card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .car-card-title {
+        font-weight: 700;
+        margin-bottom: 6px;
+        font-size: 18px;
+        color: #333;
+    }
+    .dark-mode .car-card-title { color: #fff; }
+
+    .car-card-price {
+        color: #00c853;
+        font-weight: 800;
+        font-size: 18px;
+        margin-top: auto; 
+        padding-top: 10px;
+    }
+    
+    @media (max-width: 600px) {
+        .seller-header {
+            flex-direction: column;
+            text-align: center;
+            padding-top: 60px; /* Espaço para o botão editar não ficar em cima */
+        }
+        .btn-edit-profile {
+            top: 15px;
+            right: 15px;
+        }
+    }
+</style>
+
+<div class="container">
+
+    <div class="seller-header">
+        
+        {% if user.is_authenticated and user.seller == seller %}
+            <a href="{% url 'seller_update' seller.pk %}" class="btn-edit-profile">
+                <i class="fa-solid fa-pen"></i> Editar Perfil
+            </a>
+        {% endif %}
+
+        {% if seller.photo %}
+            <img src="{{ seller.photo.url }}" alt="{{ seller.name }}" class="seller-avatar">
+        {% else %}
+            <img src="https://ui-avatars.com/api/?name={{ seller.name|urlencode }}&background=ddd&color=333&size=128" alt="{{ seller.name }}" class="seller-avatar">
+        {% endif %}
+
+        <div class="seller-info-container">
+            <div class="seller-name">
+                {{ seller.name }}
+            </div>
+
+            <div class="seller-info">
+                {% if seller.email %}
+                    <div><i class="fa-regular fa-envelope"></i> {{ seller.email }}</div>
+                {% endif %}
+                
+                {% if seller.phone %}
+                    <div style="margin-top:5px;"><i class="fa-solid fa-phone"></i> {{ seller.phone }}</div>
+                {% else %}
+                    <div style="margin-top:5px; color:#999; font-style:italic;">Sem telefone cadastrado</div>
+                {% endif %}
+                
+                {% if seller.city %}
+                    <div style="margin-top:5px;"><i class="fa-solid fa-location-dot"></i> {{ seller.city }}</div>
+                {% endif %}
+            </div>
+
+            <div style="margin-top:15px; font-weight:600; color: #ff6600;">
+                <i class="fa-solid fa-car"></i> {{ cars|length }} anúncio(s) ativo(s)
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin-bottom:25px; font-weight:800;">Estoque de {{ seller.name }}</h2>
+
+    {% if cars %}
+        <div class="car-grid">
+            {% for car in cars %}
+                <div class="car-card">
+
+                    {% if car.photo %}
+                        <img src="{{ car.photo.url }}" alt="{{ car.model }}">
+                    {% else %}
+                        <img src="https://placehold.co/600x400/eee/999?text=Sem+Foto" alt="Sem Foto">
+                    {% endif %}
+
+                    <div class="car-card-body">
+                        <div class="car-card-title">
+                            {{ car.brand }} {{ car.model }}
+                        </div>
+
+                        <div style="font-size:14px; color:#777; margin-bottom: 10px;">
+                            {{ car.factory_year|unlocalize }} • {{ car.city }}
+                        </div>
+
+                        <div class="car-card-price">
+                            R$ {{ car.value|floatformat:2|intcomma }}
+                        </div>
+
+                        <a href="{% url 'car_detail' car.pk %}" 
+                           style="display:inline-block; margin-top:15px; text-decoration:none; color:#ff6600; font-weight:600;">
+                            Ver detalhes →
+                        </a>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 50px; color: #777; background: #f9f9f9; border-radius: 10px;">
+            <i class="fa-regular fa-folder-open" style="font-size: 40px; margin-bottom: 10px;"></i>
+            <p style="font-size: 18px;">Este vendedor ainda não possui carros cadastrados.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

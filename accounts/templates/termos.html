@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso</title>
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #0d0d0d;
+            font-family: Arial, sans-serif;
+            color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 900px;
+            padding: 40px;
+            margin: 40px auto;
+            background: #1a1a1a;
+            border-radius: 10px;
+            border: 1px solid #d4af37;
+            box-shadow: 0 0 10px rgba(255, 106, 0, 0.2);
+        }
+
+        h1 {
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #d4af37;
+            margin-top: 25px;
+        }
+
+        p {
+            color: #d9d9d9;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 20px;
+            background-color: #d4af37;
+            color: #000;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-voltar:hover {
+            background-color: #d4af37;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Termos de Uso</h1>
+
+        <p>Ao utilizar nosso sistema, você concorda com todos os termos descritos nesta página.</p>
+
+        <h2>1. Uso da Plataforma</h2>
+        <p>O usuário é responsável pelas informações fornecidas e pelo uso correto do sistema.</p>
+
+        <h2>2. Cadastro</h2>
+        <p>Você deve fornecer informações verdadeiras ao se registrar.</p>
+
+        <h2>3. Responsabilidade</h2>
+        <p>Não nos responsabilizamos por uso indevido das informações por terceiros.</p>
+
+        <a href="{% url 'cars_list' %}" class="btn-voltar">Voltar</a>
+    </div>
+
+</body>
+</html>

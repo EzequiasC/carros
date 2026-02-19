@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+
+{% block content %}
+
+<style>
+    /* --- HERO BANNER (Mantido, pois dá um tchan) --- */
+    .hero-section {
+        background: linear-gradient(to right, #111, rgba(17,17,17,0.6)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1200&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 60px 20px;
+        text-align: left;
+        margin-bottom: 40px;
+        border-radius: 0 0 20px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .hero-content { max-width: 1200px; width: 100%; }
+    .hero-title { font-size: 36px; font-weight: 800; margin: 0; letter-spacing: -1px; }
+    .hero-subtitle { font-size: 16px; opacity: 0.8; margin-top: 5px; font-weight: 300; }
+
+    /* --- CONTAINER --- */
+    .catalog-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px 60px;
+    }
+
+    /* Cabeçalho da Lista */
+    .catalog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .dark-mode .catalog-header { border-bottom-color: #333; }
+
+    .header-title h2 { font-size: 22px; margin: 0; color: #333; font-weight: 700; }
+    .dark-mode .header-title h2 { color: #fff; }
+
+    .btn-clear-filter {
+        font-size: 14px;
+        color: #ff4d4d;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 600;
+    }
+
+    /* --- GRID --- */
+    .cars-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+        gap: 25px;
+    }
+
+    /* =========================================
+       NOVO DESIGN DO CARD (ESTILO TECH/CLEAN)
+       ========================================= */
+    .car-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .dark-mode .car-card {
+        background: #1e1e1e;
+        border-color: #333;
+    }
+
+    .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        border-color: var(--cor-principal);
+    }
+
+    /* Imagem */
+    .card-img-box {
+        height: 220px; /* Mais alto que o anterior */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s;
+    }
+    .car-card:hover .card-img-box img { transform: scale(1.1); }
+
+    .price-badge {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: var(--cor-principal);
+        color: white;
+        padding: 8px 15px;
+        border-top-right-radius: 12px;
+        font-weight: 800;
+        font-size: 18px;
+        z-index: 2;
+    }
+
+    /* Conteúdo */
+    .card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .card-brand {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #888;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .card-model {
+        font-size: 20px;
+        font-weight: 800;
+        color: #222;
+        margin: 0;
+        line-height: 1.2;
+    }
+    .dark-mode .card-model { color: #fff; }
+
+    /* TAGS (NOVIDADE) */
+    .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 5px;
+    }
+
+    .info-tag {
+        background: #f4f6f8;
+        color: #555;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .dark-mode .info-tag { background: #2a2a2a; color: #ccc; }
+
+    /* Separador */
+    .card-divider {
+        height: 1px;
+        background: #eee;
+        margin: 10px 0;
+    }
+    .dark-mode .card-divider { background: #333; }
+
+    /* Rodapé do Card */
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .seller-mini {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .seller-mini img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .seller-mini span {
+        font-size: 12px;
+        color: #777;
+        font-weight: 500;
+    }
+
+    .btn-details {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--cor-principal);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.2s;
+    }
+    .car-card:hover .btn-details { gap: 8px; } /* Animação setinha */
+
+</style>
+
+{% if not request.GET.search %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Estoque Premium</h1>
+        <p class="hero-subtitle">Confira as melhores oportunidades selecionadas para você.</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="catalog-container">
+
+    <div class="catalog-header">
+        <div class="header-title">
+            {% if request.GET.search %}
+                <h2>Busca: "{{ request.GET.search }}"</h2>
+            {% else %}
+                <h2>Veículos Recentes</h2>
+            {% endif %}
+        </div>
+
+        <div>
+            {% if request.GET.search %}
+                <a href="{% url 'cars_list' %}" class="btn-clear-filter">
+                    <i class="fa-solid fa-xmark"></i> Limpar
+                </a>
+            {% else %}
+                <span style="font-size:13px; color:#888; font-weight:600;">{{ cars.count }} carros</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="cars-grid">
+        {% for car in cars %}
+            <a href="{% url 'car_detail' car.id %}" class="car-card">
+                
+                <div class="card-img-box">
+                    {% if car.photo %}
+                        <img src="{{ car.photo.url }}" alt="{{ car.model }}">
+                    {% else %}
+                        <img src="{% static 'img/no-image.jpg' %}" alt="Sem imagem">
+                    {% endif %}
+                    
+                    <div class="price-badge">
+                        R$ {{ car.value|floatformat:0 }} </div>
+                </div>
+
+                <div class="card-body">
+                    <div>
+                        <div class="card-brand">{{ car.brand }}</div>
+                        <h3 class="card-model">{{ car.model }}</h3>
+                    </div>
+
+                    <div class="tags-container">
+                        <span class="info-tag">
+                            <i class="fa-regular fa-calendar"></i> {{ car.model_year|unlocalize }}
+                        </span>
+                        <span class="info-tag">
+                            <i class="fa-solid fa-road"></i> {{ car.km|floatformat:0 }}k
+                        </span>
+                        <span class="info-tag">
+                            <i class="fa-solid fa-gas-pump"></i> {{ car.fuel }}
+                        </span>
+                        <span class="info-tag">
+                             {{ car.exchange|slice:":1" }}
+                        </span>
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <div class="card-footer">
+                        <div class="seller-mini">
+                            {% if car.seller.photo %}
+                                <img src="{{ car.seller.photo.url }}">
+                            {% else %}
+                                <img src="https://ui-avatars.com/api/?name={{ car.seller.name|urlencode }}&background=eee&color=555">
+                            {% endif %}
+                            <span>{{ car.seller.name|default:"ZeksCarros"|truncatechars:10 }}</span>
+                        </div>
+
+                        <span class="btn-details">
+                            Ver detalhes <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px;">
+                <i class="fa-solid fa-magnifying-glass" style="font-size: 40px; color: #ccc; margin-bottom: 20px;"></i>
+                <h3 style="color:#555;">Nenhum carro encontrado</h3>
+                {% if request.GET.search %}
+                    <a href="{% url 'cars_list' %}" style="color:var(--cor-principal); font-weight:bold;">Ver todos</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
