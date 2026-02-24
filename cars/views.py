@@ -35,6 +35,11 @@ class CarUpdateView(UpdateView):
     form_class = CarModelForm
     template_name = 'car_update.html'
 
+    
+    def get_queryset(self):
+        carros = super().get_queryset()
+        return carros.filter(seller__user=self.request.user)
+
     def get_success_url(self):
         return reverse_lazy('car_detail', kwargs={'pk': self.object.pk})
 
@@ -43,3 +48,7 @@ class CarDeleteView(DeleteView):
     model = Car
     template_name = 'car_delete.html'
     success_url = '/cars/'
+
+    def get_queryset(self):
+        carros = super().get_queryset()
+        return carros.filter(seller__user=self.request.user)

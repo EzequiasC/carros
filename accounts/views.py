@@ -5,20 +5,17 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserRegisterForm
 from sellers.models import Seller
 
+
 def register_view(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-
-        print("\n\n\n\n\n\n FORM", form)
         if form.is_valid():
-            # Cria o usuário
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-
-            # Loga o usuário automaticamente (opcional)
+            user = form.save() 
+            
             login(request, user)
             return redirect('home')
+        else:
+            print("Erros do formulário:", form.errors)
     else:
         form = UserRegisterForm()
 
@@ -30,7 +27,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')  # ou outra página
+            return redirect('home')
     else:
         form = AuthenticationForm()
 

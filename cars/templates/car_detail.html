@@ -96,7 +96,7 @@
     /* Grid de Especificações */
     .specs-row {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Mantive 2 colunas */
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
         margin-bottom: 30px;
     }
@@ -145,8 +145,6 @@
         position: sticky;
         top: 100px;
         border: 2px solid transparent;
-        
-        /* Centralização Flexbox */
         display: flex;
         flex-direction: column;
         align-items: center; 
@@ -169,7 +167,7 @@
         margin-top: 25px;
         display: flex;
         flex-direction: column;
-        gap: 10px; /* Espaço uniforme entre os botões */
+        gap: 10px;
     }
 
     .btn-block {
@@ -186,14 +184,13 @@
         border: none;
         cursor: pointer;
         font-size: 16px;
-        box-sizing: border-box; /* Garante que padding não estoure a largura */
+        box-sizing: border-box;
     }
 
-    /* Cores dos Botões */
     .btn-whatsapp { background: #25D366; color: white; }
     .btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(37,211,102,0.3); }
 
-    .btn-edit { background: #2196F3; color: white; } /* Azul para Editar */
+    .btn-edit { background: #2196F3; color: white; }
     .btn-edit:hover { background: #1976D2; }
 
     .btn-delete { background: #ffebee; color: #d32f2f; }
@@ -204,7 +201,6 @@
     .dark-mode .btn-outline { border-color: #444; color: #ccc; }
     .dark-mode .btn-outline:hover { background: #333; }
 
-    /* Perfil Vendedor */
     .seller-profile {
         width: 100%;
         margin-top: 25px;
@@ -227,7 +223,6 @@
     .seller-name:hover { color: var(--cor-principal); }
     .dark-mode .seller-name { color: #fff; }
 
-    /* RESPONSIVIDADE */
     @media (max-width: 850px) {
         .content-grid { grid-template-columns: 1fr; }
         .sidebar-card { position: static; margin-top: 20px; }
@@ -304,8 +299,7 @@
                     </button>
                 {% endif %}
 
-                {% if user.is_authenticated %}
-                    
+                {% if request.user.is_authenticated and car.seller and request.user.id == car.seller.user.id %}
                     <a href="{% url 'car_update' car.pk %}" class="btn-block btn-edit">
                         <i class="fa-solid fa-pen-to-square"></i> Editar Anúncio
                     </a>

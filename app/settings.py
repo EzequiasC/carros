@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-2q_mm8(yijk)g9v2ay3f99+j6b5y&z81q4!v+t+72uo8)$cg9*
 DEBUG = True
 
 ALLOWED_HOSTS = ['supercandidly-achievable-valene.ngrok-free.dev', 'localhost','127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://supercandidly-achievable-valene.ngrok-free.dev',
+    ]
 
 
 # Application definition

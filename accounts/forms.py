@@ -6,9 +6,19 @@ class UserRegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label='Senha')
     password2 = forms.CharField(widget=forms.PasswordInput, label='Confirmar Senha')
 
-    # Campos extras do Seller
-    city = forms.ModelChoiceField(queryset=City.objects.all(), required=True, label="Cidade")
-    phone = forms.CharField(max_length=20, required=True, label="Telefone")
+    TIPO_CHOICES = [
+        ('olheiro', 'Olheiro'),
+        ('vendedor', 'Vendedor')
+    ]
+    tipo_usuario = forms.ChoiceField(
+        choices=TIPO_CHOICES, 
+        widget=forms.RadioSelect, 
+        initial='olheiro', 
+        label="O que você deseja fazer no Zek's Cars?"
+    )
+
+    city = forms.ModelChoiceField(queryset=City.objects.all(), required=False, label="Cidade")
+    phone = forms.CharField(max_length=20, required=False, label="Telefone")
     description = forms.CharField(widget=forms.Textarea, required=False, label="Descrição")
 
     class Meta:
@@ -27,25 +37,39 @@ class UserRegisterForm(forms.ModelForm):
             raise forms.ValidationError("Este email já está em uso.")
         return email
 
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get('tipo_usuario')
+        
+        if tipo == 'vendedor':
+            if not cleaned_data.get('city'):
+                self.add_error('city', 'A cidade é obrigatória para vendedores.')
+            if not cleaned_data.get('phone'):
+                self.add_error('phone', 'O telefone é obrigatório para vendedores.')
+                
+        return cleaned_data
+
     def save(self, commit=True):
-        # Primeiro, salva o usuário
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password'])
         
-        
-        print(" \n\n\n\n\n city=self.cleaned_data['city']",  self.cleaned_data)
-
         if commit:
             user.save()
 
-            # Cria o Seller vinculado
-            Seller.objects.create(
-                user=user,
-                name=user.username,
-                email=user.email,
-                city=self.cleaned_data['city'],
-                phone=self.cleaned_data['phone'],
-                description=self.cleaned_data.get('description', '')
-            )
+            
+            tipo = self.cleaned_data.get('tipo_usuario')
+            
+            if tipo == 'vendedor':
+                cidade_obj = self.cleaned_data.get('city')
+                tel = self.cleaned_data.get('phone')
+                desc = self.cleaned_data.get('description', '')
 
+                Seller.objects.create(
+                    user=user,
+                    name=user.username,
+                    email=user.email,
+                    city=cidade_obj,
+                    phone=tel,
+                    description=desc
+                )
         return user
