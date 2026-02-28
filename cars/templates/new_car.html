@@ -3,7 +3,6 @@
 {% block content %}
 
 <style>
-/* --- CONTAINER PRINCIPAL --- */
 .new-car-container {
     max-width: 800px;
     margin: 40px auto;
@@ -27,14 +26,12 @@
     font-size: 28px;
 }
 
-/* --- GRID SYSTEM --- */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
-/* Campos que ocupam a largura total */
 .field-description, .field-photo, .field-seller, .field-model, .field-brand, .field-new_city {
     grid-column: span 2;
 }
@@ -55,7 +52,6 @@
     color: #ccc;
 }
 
-/* --- ESTILIZAÇÃO DOS INPUTS E SELECTS --- */
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -67,7 +63,7 @@
     color: #333;
     font-size: 15px;
     transition: all 0.3s ease;
-    box-sizing: border-box; /* Garante que padding não estoure */
+    box-sizing: border-box; 
 }
 
 .form-group select {
@@ -75,7 +71,6 @@
     background-image: none;
 }
 
-/* --- MODO ESCURO --- */
 .dark-mode .form-group input,
 .dark-mode .form-group select,
 .dark-mode .form-group textarea {
@@ -89,7 +84,6 @@
     color: #fff;
 }
 
-/* Foco */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -105,7 +99,6 @@
     background-color: #333;
 }
 
-/* --- MENSAGENS DE ERRO --- */
 .errorlist {
     color: #ff4444;
     margin: 5px 0 0;
@@ -115,7 +108,6 @@
     font-weight: 600;
 }
 
-/* --- BOTÕES --- */
 .form-actions {
     margin-top: 30px;
     display: flex;
@@ -171,7 +163,6 @@
     color: #fff;
 }
 
-/* Estilo Especial para o Input de Nova Cidade */
 .new-city-alert {
     background-color: rgba(255, 193, 7, 0.1) !important;
     border: 1px dashed #ffc107 !important;
@@ -181,7 +172,7 @@
     border-color: #bfa900 !important;
 }
 
-/* Responsividade */
+
 @media (max-width: 600px) {
     .form-grid {
         grid-template-columns: 1fr;

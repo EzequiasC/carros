@@ -28,7 +28,6 @@ class CarModelForm(forms.ModelForm):
 
         self.fields['city'].required = False 
 
-    # --- VALIDAÇÃO: Garante que ou escolheu da lista OU digitou novo ---
     def clean(self):
         cleaned_data = super().clean()
         city = cleaned_data.get('city')
@@ -51,7 +50,6 @@ class CarModelForm(forms.ModelForm):
             self.add_error('factory_year', 'Não é possível cadastrar fabricados antes de 1980')
         return factory_year
 
-    # --- SALVAMENTO INTELIGENTE (Smart Save) ---
     def save(self, commit=True):
         instance = super().save(commit=False)
         new_city_name = self.cleaned_data.get('new_city')

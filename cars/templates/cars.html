@@ -6,7 +6,6 @@
 {% block content %}
 
 <style>
-/* --- HERO BANNER ATUALIZADO --- */
     .hero-section {
 
         background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1200&auto=format&fit=crop');
@@ -38,14 +37,12 @@
     .hero-title { font-size: 42px; font-weight: 900; margin: 0; letter-spacing: -1px; }
     .hero-subtitle { font-size: 18px; opacity: 0.9; margin-top: 10px; font-weight: 400; }
 
-    /* --- CONTAINER --- */
     .catalog-container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 20px 60px;
     }
 
-    /* Cabeçalho da Lista */
     .catalog-header {
         display: flex;
         justify-content: space-between;
@@ -69,7 +66,6 @@
         font-weight: 600;
     }
 
-    /* --- GRID --- */
     .cars-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
@@ -100,7 +96,6 @@
         border-color: var(--cor-principal);
     }
 
-    /* Imagem */
     .card-img-box {
         height: 220px; 
         position: relative;
@@ -128,7 +123,6 @@
         z-index: 2;
     }
 
-    /* Conteúdo */
     .card-body {
         padding: 20px;
         display: flex;
@@ -154,7 +148,6 @@
     }
     .dark-mode .card-model { color: #fff; }
 
-    /* TAGS (NOVIDADE) */
     .tags-container {
         display: flex;
         flex-wrap: wrap;
@@ -175,7 +168,6 @@
     }
     .dark-mode .info-tag { background: #2a2a2a; color: #ccc; }
 
-    /* Separador */
     .card-divider {
         height: 1px;
         background: #eee;
@@ -183,7 +175,6 @@
     }
     .dark-mode .card-divider { background: #333; }
 
-    /* Rodapé do Card */
     .card-footer {
         display: flex;
         justify-content: space-between;

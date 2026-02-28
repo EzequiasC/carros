@@ -5,9 +5,8 @@
 {% block content %}
 
 <style>
-    /* Estilos originais mantidos */
     .seller-header {
-        background: var(--card-bg, #fff); /* Fallback para white se var não existir */
+        background: var(--card-bg, #fff);
         padding: 35px;
         border-radius: 20px;
         box-shadow: 0 10px 35px rgba(0,0,0,0.08);
@@ -15,7 +14,7 @@
         display: flex;
         align-items: center;
         gap: 30px; 
-        position: relative; /* Para posicionar o botão de editar */
+        position: relative;
     }
 
     .dark-mode .seller-header {
@@ -53,7 +52,6 @@
     }
     .dark-mode .seller-info { color: #ccc; }
 
-    /* --- BOTÃO DE EDITAR (NOVO) --- */
     .btn-edit-profile {
         position: absolute;
         top: 30px;
@@ -84,7 +82,6 @@
     }
     .dark-mode .btn-edit-profile:hover { background: #444; }
 
-    /* Grid de Carros (Mantido) */
     .car-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -140,7 +137,7 @@
         .seller-header {
             flex-direction: column;
             text-align: center;
-            padding-top: 60px; /* Espaço para o botão editar não ficar em cima */
+            padding-top: 60px;
         }
         .btn-edit-profile {
             top: 15px;

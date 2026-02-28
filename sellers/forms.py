@@ -4,7 +4,7 @@ from .models import Seller
 class SellerUpdateForm(forms.ModelForm):
     class Meta:
         model = Seller
-        fields = ['name', 'phone', 'city', 'photo'] # Campos que ele pode editar
+        fields = ['name', 'phone', 'city', 'photo']
         labels = {
             'name': 'Nome do Vendedor',
             'phone': 'WhatsApp/Telefone',

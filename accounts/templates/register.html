@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-
+{% block extra_css %}
 <style>
     .register-wrapper {
         min-height: 85vh;
@@ -100,7 +99,6 @@
         width: 100%;
     }
 
-
     #id_tipo_usuario > div, 
     #id_tipo_usuario li {
         width: auto !important; 
@@ -168,17 +166,34 @@
     .login-link { text-align: center; margin-top: 20px; font-size: 13px; color: #777; }
     .login-link a { color: var(--cor-principal); text-decoration: none; font-weight: bold; }
 
-    @media (max-width: 768px) {
-        .split-container { flex-direction: column; }
-        .image-side { display: none; }
-        .form-side { padding: 30px; }
-    }
-
     .campos-vendedor { display: none; animation: fadeIn 0.4s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .error-msg { color: #dc3545; font-size: 12px; margin-top: 5px; font-weight: 600; }
-</style>
 
+    @media (max-width: 992px) {
+        .form-side { padding: 40px; }
+        .image-content h2 { font-size: 28px; }
+        #id_tipo_usuario { gap: 10px; }
+    }
+
+    @media (max-width: 768px) {
+        .register-wrapper { padding: 20px 15px; min-height: auto; }
+        .split-container { flex-direction: column; border-radius: 15px; }
+        .image-side { display: none; }
+        .form-side { padding: 30px 20px; }
+        .form-header h2 { font-size: 24px; margin-bottom: 5px; }
+        #id_tipo_usuario label { min-width: 120px; padding: 10px 15px; font-size: 14px; }
+    }
+
+    @media (max-width: 400px) {
+        .form-side { padding: 25px 15px; }
+        #id_tipo_usuario { flex-direction: column !important; gap: 12px; }
+        #id_tipo_usuario label { width: 100%; min-width: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
 <div class="register-wrapper">
     <div class="split-container">
         
@@ -224,9 +239,7 @@
                 
                 <div class="form-group" style="text-align: center;">
                     <label style="font-size: 15px; color: var(--cor-principal); margin-top: 10px;">{{ form.tipo_usuario.label }}</label>
-                    
                     {{ form.tipo_usuario }}
-                    
                     {% if form.tipo_usuario.errors %}<div class="error-msg">{{ form.tipo_usuario.errors.0 }}</div>{% endif %}
                 </div>
 
@@ -284,7 +297,15 @@
         });
 
         atualizarCampos();
+
+        const phoneInput = document.getElementById('{{ form.phone.id_for_label }}');
+        
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function (e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            });
+        }
     });
 </script>
-
 {% endblock %}
