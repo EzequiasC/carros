@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: carros-django
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn app.wsgi:application"
+    plan: free
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: carros-db
+          property: connectionString
+
+databases:
+  - name: carros-db
+    plan: free
+    databaseName: carros
+    user: carros_user
