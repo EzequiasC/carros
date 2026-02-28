@@ -184,7 +184,7 @@
 </style>
 
 <div class="new-car-container">
-    <h2>Cadastrar Novo Carro</h2>
+    <h2>Cadastrar Carro</h2>
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -324,4 +324,42 @@
     }
 </style>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputValor = document.getElementById('id_value'); 
+
+        if (inputValor) {
+            inputValor.setAttribute("type", "text");
+
+            inputValor.addEventListener('input', function(e) {
+                let valor = e.target.value;
+
+                valor = valor.replace(/\D/g, "");
+
+                if (valor === "") {
+                    e.target.value = "";
+                    return;
+                }
+
+                valor = (parseInt(valor, 10) / 100).toFixed(2) + "";
+
+                valor = valor.replace(".", ",");
+
+                valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                e.target.value = "R$ " + valor;
+            });
+
+            const form = inputValor.closest('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    if (inputValor.value) {
+                        let valorLimpo = inputValor.value.replace("R$ ", "").replace(/\./g, "").replace(",", ".");
+                        inputValor.value = valorLimpo;
+                    }
+                });
+            }
+        }
+    });
+</script>
 {% endblock %}
