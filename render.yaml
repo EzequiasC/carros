@@ -3,7 +3,7 @@ services:
     name: carros-django
     env: python
     rootDir: ./
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
     startCommand: "gunicorn config.wsgi:application"
     plan: free
     envVars:
