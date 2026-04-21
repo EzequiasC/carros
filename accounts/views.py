@@ -10,12 +10,9 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save() 
-            
+            user = form.save()
             login(request, user)
             return redirect('home')
-        else:
-            print("Erros do formulário:", form.errors)
     else:
         form = UserRegisterForm()
 

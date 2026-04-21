@@ -35,6 +35,13 @@ class UserRegisterForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'password', 'password2']
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("Este usuário já está em uso.")
+        return username
+
     def clean_password2(self):
         cd = self.cleaned_data
         if cd.get('password') != cd.get('password2'):
