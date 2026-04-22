@@ -1,7 +1,8 @@
 import re
 from django import forms
 from django.contrib.auth.models import User
-from sellers.models import Seller, City
+from sellers.models import Seller
+from cars.models import City
 
 class UserRegisterForm(forms.ModelForm):
     email = forms.EmailField(label='Endereço de email', required=True)
@@ -20,7 +21,11 @@ class UserRegisterForm(forms.ModelForm):
         label="O que você deseja fazer no Zek's Cars?"
     )
 
-    city = forms.ModelChoiceField(queryset=City.objects.all(), required=False, label="Cidade")
+    city = forms.ModelChoiceField(queryset=City.objects.none(), required=False, label="Cidade")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].queryset = City.objects.all().order_by('name')
     
     phone = forms.CharField(
         max_length=20, 
