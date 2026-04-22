@@ -21,11 +21,20 @@ class UserRegisterForm(forms.ModelForm):
         label="O que você deseja fazer no Zek's Cars?"
     )
 
-    city = forms.ModelChoiceField(queryset=City.objects.none(), required=False, label="Cidade")
+    city = forms.ModelChoiceField(
+        queryset=City.objects.none(),
+        required=False,
+        label="Cidade",
+        widget=forms.Select(attrs={'id': 'id_city'})
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['city'].queryset = City.objects.all().order_by('name')
+        
+        if args and args[0]:
+            self.fields['city'].queryset = City.objects.all()
+        else:
+            self.fields['city'].queryset = City.objects.none()
     
     phone = forms.CharField(
         max_length=20, 

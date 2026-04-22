@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.http import JsonResponse
+from cars.models import City
 
 class CarsListView(ListView):
     model = Car
@@ -16,6 +18,15 @@ class CarsListView(ListView):
         if search:
             cars = cars.filter(model__icontains=search)
         return cars
+    
+    
+
+
+def city_search(request):
+    q = request.GET.get('q', '')
+    cities = City.objects.filter(name__icontains=q).order_by('name')[:20]
+    results = [{'id': c.id, 'text': c.name} for c in cities]
+    return JsonResponse({'results': results})
 
 @method_decorator(login_required(login_url='login'), name='dispatch')
 class NewCreateView(CreateView):
