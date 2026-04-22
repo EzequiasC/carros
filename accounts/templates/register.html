@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function selectCity(id, name) {
-        // atualiza o <select> hidden que o Django vai receber no POST
+        
         selectField.innerHTML = '<option value="' + id + '" selected>' + name + '</option>';
         searchInput.value = name;
         closeDropdown();
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function () {
             div.className = 'city-option';
             div.textContent = city.text;
             div.addEventListener('mousedown', function (e) {
-                e.preventDefault(); // evita blur antes do clique
+                e.preventDefault(); 
                 selectCity(city.id, city.text);
             });
             dropdown.appendChild(div);

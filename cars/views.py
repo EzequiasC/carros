@@ -23,9 +23,14 @@ class CarsListView(ListView):
 
 
 def city_search(request):
-    q = request.GET.get('q', '')
-    cities = City.objects.filter(name__icontains=q).order_by('name')[:20]
-    results = [{'id': c.id, 'text': c.name} for c in cities]
+    query = request.GET.get('q', '')
+    
+    
+    cities = City.objects.filter(name__icontains=query)
+    
+    
+    results = [{'id': c.id, 'text': str(c)} for c in cities]
+    
     return JsonResponse({'results': results})
 
 @method_decorator(login_required(login_url='login'), name='dispatch')

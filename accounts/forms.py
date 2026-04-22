@@ -31,10 +31,7 @@ class UserRegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        if args and args[0]:
-            self.fields['city'].queryset = City.objects.all()
-        else:
-            self.fields['city'].queryset = City.objects.none()
+        self.fields['city'].queryset = City.objects.all()
     
     phone = forms.CharField(
         max_length=20, 
@@ -117,25 +114,30 @@ class UserRegisterForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password'])
-        
-        if commit:
-            user.save()
-
-            tipo = self.cleaned_data.get('tipo_usuario')
+            user = super().save(commit=False)
+            user.set_password(self.cleaned_data['password'])
             
-            if tipo == 'vendedor':
-                cidade_obj = self.cleaned_data.get('city')
-                tel = self.cleaned_data.get('phone')
-                desc = self.cleaned_data.get('description', '')
+            if commit:
+                user.save()
 
-                Seller.objects.create(
-                    user=user,
-                    name=user.username,
-                    email=user.email,
-                    city=cidade_obj,
-                    phone=tel,
-                    description=desc
-                )
-        return user
+                tipo = self.cleaned_data.get('tipo_usuario')
+                
+                if tipo == 'vendedor':
+                    city_data = self.cleaned_data.get('city')
+
+                    city_id_num = city_data.id if hasattr(city_data, 'id') else city_data
+
+                    tel = self.cleaned_data.get('phone')
+                    desc = self.cleaned_data.get('description', '')
+
+                    
+                    Seller.objects.create(
+                        user=user,
+                        name=user.username,
+                        email=user.email,
+                        city_id=city_id_num,  
+                        phone=tel,
+                        description=desc
+                    )
+                    
+            return user

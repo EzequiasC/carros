@@ -15,12 +15,7 @@ class Seller(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     phone = models.CharField(max_length=50, blank=True, null=True)
-    city = models.ForeignKey(
-        City, 
-        on_delete=models.PROTECT, 
-        related_name='sellers_city', blank=True, null=True
-        
-    )
+    city = models.ForeignKey('cars.City', on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     photo = models.ImageField(upload_to='sellers/', blank=True, null=True)
 
