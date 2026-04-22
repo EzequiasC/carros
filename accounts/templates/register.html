@@ -308,52 +308,58 @@
         }
     });
 </script>
-
-<!-- SELECT2 -->
+<!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
 
+<!-- Select2 JS (NÃO precisa carregar jQuery aqui se já está no base.html) -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const radios = document.querySelectorAll('input[name="tipo_usuario"]');
-        const areaVendedor = document.getElementById('area-vendedor');
+document.addEventListener("DOMContentLoaded", function () {
 
-        function atualizarCampos() {
-            const radioSelecionado = document.querySelector('input[name="tipo_usuario"]:checked');
-            
-            if (radioSelecionado) {
-                if (radioSelecionado.value === 'vendedor') {
-                    areaVendedor.style.display = 'block';
-                } else {
-                    areaVendedor.style.display = 'none';
-                }
-            }
+    const areaVendedor = document.getElementById('area-vendedor');
+
+    function atualizarCampos() {
+        const radio = document.querySelector('input[name="tipo_usuario"]:checked');
+
+        if (radio && radio.value === 'vendedor') {
+            areaVendedor.style.display = 'block';
+        } else {
+            areaVendedor.style.display = 'none';
         }
+    }
 
-        radios.forEach(radio => {
-            radio.addEventListener('change', atualizarCampos);
-        });
-
-        atualizarCampos();
-
-        const phoneInput = document.getElementById('{{ form.phone.id_for_label }}');
-        
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function (e) {
-                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-            });
-        }
+    document.querySelectorAll('input[name="tipo_usuario"]').forEach(radio => {
+        radio.addEventListener('change', atualizarCampos);
     });
 
-    // SELECT2 (se jQuery já existir no base.html)
-    $(document).ready(function() {
+    atualizarCampos();
+
+    // máscara telefone
+    const phoneInput = document.getElementById('{{ form.phone.id_for_label }}');
+
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '')
+                .match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+
+            e.target.value = !x[2]
+                ? x[1]
+                : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    }
+
+    // SELECT2 (com proteção)
+    if (window.jQuery && $('#id_city').length) {
         $('#id_city').select2({
             placeholder: "Digite para buscar uma cidade",
             allowClear: true,
             width: '100%'
         });
-    });
+    } else {
+        console.warn("Select2 não inicializado (jQuery ou campo não encontrado)");
+    }
+
+});
 </script>
 {% endblock %}
